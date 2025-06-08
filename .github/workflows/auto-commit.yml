@@ -2,8 +2,8 @@ name: Scheduled Auto Commit
 
 on:
   schedule:
-    - cron: '0 */12 * * *'  # Every 12 hours UTC
-  workflow_dispatch:        # Optional: manual run
+    - cron: '0 */12 * * *'
+  workflow_dispatch:
 
 jobs:
   auto-commit:
@@ -19,15 +19,14 @@ jobs:
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Update heartbeat file
-        run: |
-          echo "Last updated: $(date -u)" > heartbeat.txt
+        run: echo "Last updated: $(date -u)" > heartbeat.txt
 
       - name: Commit changes
         run: |
           git add heartbeat.txt
           git commit -m "🤖 Auto-update: $(date -u)" || echo "No changes to commit"
 
-      - name: Push changes using PAT
-        uses: ad-m/github-push-action@v0.6.0
-        with:
-          github_token: ${{ secrets.MY_GITHUB_PAT }}
+      - name: Push changes
+        run: |
+          git remote set-url origin https://x-access-token:${{ secrets.MY_GITHUB_PAT }}@github.com/${{ github.repository }}
+          git push origin HEAD
