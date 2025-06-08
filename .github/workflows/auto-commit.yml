@@ -1,0 +1,32 @@
+name: Scheduled Auto Commit
+
+on:
+  schedule:
+    - cron: '0 */12 * * *'  # Every 12 hours UTC
+  workflow_dispatch:        # Optional: allow manual run from GitHub UI
+
+jobs:
+  auto-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Update heartbeat file
+        run: |
+          echo "Last updated: $(date -u)" > heartbeat.txt
+
+      - name: Commit changes
+        run: |
+          git add heartbeat.txt
+          git commit -m "🤖 Auto-update: $(date -u)" || echo "No changes to commit"
+
+      - name: Push changes
+        run: |
+          git push origin main
