@@ -19,7 +19,9 @@ jobs:
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Update heartbeat file
-        run: echo "Last updated: $(date -u)" > heartbeat.txt
+        run: |
+          echo "Last updated: $(date -u)" > heartbeat.txt
+
 
       - name: Commit changes
         run: |
